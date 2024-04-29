@@ -6,17 +6,25 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {HttpClient} from "@angular/common/http";
+import {NgForOf} from "@angular/common";
+
+interface Todo {
+  _id: string;
+  title: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-grid-container',
   templateUrl: './grid-container.component.html',
   styleUrls: ['./grid-container.component.scss'],
   standalone: true,
-  imports: [MatGridListModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, ReactiveFormsModule]
+  imports: [MatGridListModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, ReactiveFormsModule, NgForOf]
 })
 
 export class GridContainerComponent implements OnInit{
   registerForm: FormGroup;
+  notesData: Todo[] = [];
 
   constructor(private http: HttpClient) {
     this.registerForm = new FormGroup({
@@ -27,6 +35,7 @@ export class GridContainerComponent implements OnInit{
 
   ngOnInit() {
     this.loadTodos();
+    console.log(this.notesData)
   }
 
   submitTodo() {
@@ -45,15 +54,15 @@ export class GridContainerComponent implements OnInit{
   }
 
   loadTodos() {
-    const res = this.http.get<any>('http://localhost:3000/api/todo').subscribe({
+    this.http.get<any>('http://localhost:3000/api/todo').subscribe({
       next: (response) => {
-        console.log(response);
+        this.notesData = response.todo;
+        console.log(this.notesData)
       },
       error: (error) => {
         console.log('Error loading todos', error);
       }
     });
-    console.log(res);
   }
 }
 

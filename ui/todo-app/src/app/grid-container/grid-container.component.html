@@ -1,12 +1,11 @@
-<mat-grid-list class="center" cols="1" rowHeight="100%">
-  <mat-grid-tile>
+<mat-grid-list class="center center-top" cols="2" rowHeight=4:1>
+  <mat-grid-tile class="mat-grid-tile full-width">
     <mat-card class="card">
       <mat-card-header class="align-center">
         <div mat-card-avatar class="example-header-image"></div>
         <mat-card-title>Shiba Inu</mat-card-title>
         <mat-card-subtitle>Dog Breed</mat-card-subtitle>
       </mat-card-header>
-
       <mat-card-content class="align-center">
         <form [formGroup]="registerForm" class="form" (ngSubmit)="submitTodo()">
           <mat-form-field class="full-width">
@@ -17,10 +16,20 @@
             <mat-label>What do you have to do?</mat-label>
             <textarea matInput formControlName="description" name="description"></textarea>
           </mat-form-field>
-          <button mat-flat-button color="primary" type="submit" value="submit" [disabled]="!registerForm.valid">Submit</button>
+          <button mat-flat-button color="primary" type="submit" value="submit" [disabled]="!registerForm.valid">Submit
+          </button>
         </form>
       </mat-card-content>
-
     </mat-card>
   </mat-grid-tile>
+
+    <mat-grid-tile *ngFor="let note of notesData" class="mat-grid-tile">
+      <mat-card class="card">
+        <mat-card-header class="align-center">
+          <mat-card-title>{{ note.title }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="align-center ">{{ note.description }}</mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
 </mat-grid-list>
