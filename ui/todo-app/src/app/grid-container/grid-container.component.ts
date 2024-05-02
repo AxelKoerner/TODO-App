@@ -7,6 +7,8 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {MatButtonModule} from "@angular/material/button";
 import {HttpClient} from "@angular/common/http";
 import {NgForOf} from "@angular/common";
+import {MatDividerModule} from '@angular/material/divider';
+import {MatIconModule} from '@angular/material/icon';
 
 interface Todo {
   _id: string;
@@ -19,7 +21,17 @@ interface Todo {
   templateUrl: './grid-container.component.html',
   styleUrls: ['./grid-container.component.scss'],
   standalone: true,
-  imports: [MatGridListModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, ReactiveFormsModule, NgForOf]
+  imports: [
+    MatGridListModule,
+    MatCardModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    NgForOf,
+    MatDividerModule,
+    MatIconModule,]
 })
 
 export class GridContainerComponent implements OnInit{
@@ -38,6 +50,23 @@ export class GridContainerComponent implements OnInit{
     console.log(this.notesData)
   }
 
+  editTodo(title: string) {
+    //todo
+  }
+
+  deleteTodo(title: any) {
+    this.http.delete('http://localhost:3000/api/todo', {params: {title}}).subscribe({
+      //problem is here because title is not being given over correctly
+      next: (response) => {
+        console.log('todo deleted successfully:', response)
+        this.loadTodos();
+      },
+      error: (error) => {
+        console.log('error deleting todo', error)
+      }
+    })
+  }
+
   submitTodo() {
     const formData = this.registerForm.value;
     this.http.post<any>('http://localhost:3000/api/todo', formData)
@@ -45,7 +74,8 @@ export class GridContainerComponent implements OnInit{
         {
           next: (response) => {
             console.log('todo created successfully:', response)
-            this.registerForm.reset()
+            this.loadTodos();
+            this.registerForm.reset();
           },
           error: (error) => {
             console.log('error creating todo', error)

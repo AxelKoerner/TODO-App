@@ -1,4 +1,4 @@
-<mat-grid-list class="center center-top" cols="2" rowHeight=4:1>
+<mat-grid-list class="center center-top" cols="1" rowHeight=3:1>
   <mat-grid-tile class="mat-grid-tile full-width">
     <mat-card class="card">
       <mat-card-header class="align-center">
@@ -22,14 +22,28 @@
       </mat-card-content>
     </mat-card>
   </mat-grid-tile>
+  </mat-grid-list>
 
+<mat-grid-list class="center center-top" cols="2" rowHeight=3:1>
     <mat-grid-tile *ngFor="let note of notesData" class="mat-grid-tile">
       <mat-card class="card">
         <mat-card-header class="align-center">
           <mat-card-title>{{ note.title }}</mat-card-title>
         </mat-card-header>
-        <mat-card-content class="align-center ">{{ note.description }}</mat-card-content>
+        <mat-divider class="margin-bottom"></mat-divider>
+        <mat-card-content>{{ note.description }}</mat-card-content>
+        <mat-card-actions>
+          <div class="flex-container">
+          <button mat-icon-button color="primary" aria-label="Edit Button" (click)="editTodo(note.title)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          </div>
+          <div>
+            <button mat-icon-button color="primary" aria-label="Delete Button" (click)="deleteTodo(note.title)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-card-actions>
       </mat-card>
     </mat-grid-tile>
-
 </mat-grid-list>

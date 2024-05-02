@@ -1,5 +1,5 @@
 import express from 'express';
-import {createTodoDocument, findTodoDocument} from "./todo-service.js";
+import {createTodoDocument, findTodoDocument, deleteTodoDocument} from "./todo-service.js";
 import cors from "cors";
 
 const app = express();
@@ -24,6 +24,17 @@ app.get('/api/todo', async (req, res) => {
         res.status(200).json({message: `Searched for todo's with title: ${title}`, todo});
     } catch (error) {
         console.error('Error fetching todo document', error);
+        res.status(500).json({error: 'Internal server error'});
+    }
+})
+
+app.delete('/api/todo', async (req, res) => {
+    const title = req.query;
+    try {
+        await deleteTodoDocument(title);
+        res.status(200).json({message: `todo deleted successfully with title: ${title}`});
+    } catch (error) {
+        console.log('Error deleting todo document', error);
         res.status(500).json({error: 'Internal server error'});
     }
 })

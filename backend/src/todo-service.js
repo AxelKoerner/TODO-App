@@ -6,10 +6,7 @@ export async function connectToCluster(uri) {
     let mongoClient;
     try {
         mongoClient = new MongoClient(uri);
-        console.log('Connecting to MongoDB Atlas cluster...');
         await mongoClient.connect();
-        console.log('Successfully connected to MongoDB Atlas!');
-
         return mongoClient;
     }
     catch(error) {
@@ -50,14 +47,24 @@ export async function findTodoDocument(title){
     }
 }
 
+export async function deleteTodoDocument(title) {
+    const uri = process.env.DB_URI;
+    let mongoClient;
+    try {
+        mongoClient = await connectToCluster(uri);
+        const db = mongoClient.db('todoappdb');
+        const collection = db.collection('todoappcollection');
+        return await collection.deleteMany(title)
+    }
+    finally {
+        await mongoClient.close();
+    }
+}
+
 export async function updateTodoDocument(collection, title, updatedFields) {
     await collection.updateMany(
         {title},
         {$set: updatedFields}
     )
-}
-
-export async function deleteTodoDocument(collection, title) {
-    await collection.deleteMany({title})
 }
 
