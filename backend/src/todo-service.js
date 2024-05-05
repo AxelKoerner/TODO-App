@@ -40,7 +40,21 @@ export async function findTodoDocument(title){
         mongoClient = await connectToCluster(uri)
         const db = mongoClient.db('todoappdb');
         const collection = db.collection('todoappcollection');
-        return await collection.find(title).toArray();
+        return await collection.find(title, {sort: {title: -1}}).toArray();
+    }
+    finally {
+        await mongoClient.close();
+    }
+}
+
+export async function findOneTodoDocument(title){
+    const uri = process.env.DB_URI
+    let mongoClient;
+    try {
+        mongoClient = await connectToCluster(uri)
+        const db = mongoClient.db('todoappdb');
+        const collection = db.collection('todoappcollection');
+        return await collection.findOne(title)
     }
     finally {
         await mongoClient.close();

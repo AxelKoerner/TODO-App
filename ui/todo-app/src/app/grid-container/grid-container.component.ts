@@ -6,7 +6,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {HttpClient} from "@angular/common/http";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 
@@ -31,12 +31,15 @@ interface Todo {
     ReactiveFormsModule,
     NgForOf,
     MatDividerModule,
-    MatIconModule,]
+    MatIconModule,
+    NgIf,
+  ]
 })
 
 export class GridContainerComponent implements OnInit{
   registerForm: FormGroup;
   notesData: Todo[] = [];
+  addNotesVisibly: boolean = false;
 
   constructor(private http: HttpClient) {
     this.registerForm = new FormGroup({
@@ -47,11 +50,19 @@ export class GridContainerComponent implements OnInit{
 
   ngOnInit() {
     this.loadTodos();
-    console.log(this.notesData)
   }
 
   editTodo(title: string) {
-    //todo
+    this.toggleEdit(title);
+    //this.http.put<any>('https://localhost:3000/api/todo', )
+  }
+
+  toggleEdit(title: string) {
+
+  }
+
+  toggleAddNoteVisibility() {
+    this.addNotesVisibly  = !this.addNotesVisibly;
   }
 
   deleteTodo(title: any) {
@@ -74,8 +85,9 @@ export class GridContainerComponent implements OnInit{
         {
           next: (response) => {
             console.log('todo created successfully:', response)
-            this.loadTodos();
+            this.findTodo(formData.title)
             this.registerForm.reset();
+            this.addNotesVisibly = false;
           },
           error: (error) => {
             console.log('error creating todo', error)
@@ -83,11 +95,23 @@ export class GridContainerComponent implements OnInit{
         })
   }
 
+  findTodo(title: string) {
+    this.http.get<any>('http://localhost:3000/api/todo/find', {params: {title}}).subscribe({
+      next: (response) => {
+        console.log(response.todo)
+        this.notesData.unshift(response.todo);
+        console.log(this.notesData)
+      },
+      error: (error) => {
+        console.log('Error finding todo', error);
+      }
+    })
+  }
+
   loadTodos() {
     this.http.get<any>('http://localhost:3000/api/todo').subscribe({
       next: (response) => {
         this.notesData = response.todo;
-        console.log(this.notesData)
       },
       error: (error) => {
         console.log('Error loading todos', error);

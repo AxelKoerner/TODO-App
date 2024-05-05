@@ -1,4 +1,13 @@
-<mat-grid-list class="center center-top" cols="1" rowHeight=3:1>
+<div class="add-button-center">
+  <mat-card class="add-button-center-card">
+    <h3 class="no-padding">Add Todo</h3>
+<button mat-icon-button color="primary" aria-label="Add Note" (click)="toggleAddNoteVisibility()">
+  <mat-icon>add</mat-icon>
+</button>
+    </mat-card>
+</div>
+
+<mat-grid-list *ngIf="addNotesVisibly" class="container" cols="1" rowHeight=3:1>
   <mat-grid-tile class="mat-grid-tile full-width">
     <mat-card class="card">
       <mat-card-header class="align-center">

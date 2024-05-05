@@ -1,5 +1,5 @@
 import express from 'express';
-import {createTodoDocument, findTodoDocument, deleteTodoDocument} from "./todo-service.js";
+import {createTodoDocument, findTodoDocument, deleteTodoDocument, findOneTodoDocument} from "./todo-service.js";
 import cors from "cors";
 
 const app = express();
@@ -18,9 +18,20 @@ app.post('/api/todo', async (req, res) => {
 });
 
 app.get('/api/todo', async (req, res) => {
-    const {title} = req.query;
+    const title = req.query;
     try {
-        const todo = await findTodoDocument();
+        const todo = await findTodoDocument(title);
+        res.status(200).json({message: `Searched for todo's with title: ${title}`, todo});
+    } catch (error) {
+        console.error('Error fetching todo document', error);
+        res.status(500).json({error: 'Internal server error'});
+    }
+})
+
+app.get('/api/todo/find', async (req, res) => {
+    const title = req.query;
+    try {
+        const todo = await findOneTodoDocument(title);
         res.status(200).json({message: `Searched for todo's with title: ${title}`, todo});
     } catch (error) {
         console.error('Error fetching todo document', error);
