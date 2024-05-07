@@ -41,9 +41,19 @@
         </mat-card-header>
         <mat-divider class="margin-bottom"></mat-divider>
         <mat-card-content>{{ note.description }}</mat-card-content>
+        <mat-card-content>
+          <form *ngIf="checkEditable(note.title)" [formGroup]="registerForm" class="form" (ngSubmit)="editTodo(note.title)">
+            <mat-form-field class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" name="description">{{note.description}}</textarea>
+            </mat-form-field>
+            <button mat-flat-button color="primary" type="submit" value="submit">Submit
+            </button>
+          </form>
+        </mat-card-content>
         <mat-card-actions>
           <div class="flex-container">
-          <button mat-icon-button color="primary" aria-label="Edit Button" (click)="editTodo(note.title)">
+          <button mat-icon-button color="primary" aria-label="Edit Button" (click)="toggleEdit(note.title)">
             <mat-icon>edit</mat-icon>
           </button>
           </div>

@@ -16,6 +16,10 @@ interface Todo {
   description: string;
 }
 
+interface editableNotes {
+  [key: string]: boolean;
+}
+
 @Component({
   selector: 'app-grid-container',
   templateUrl: './grid-container.component.html',
@@ -40,6 +44,7 @@ export class GridContainerComponent implements OnInit{
   registerForm: FormGroup;
   notesData: Todo[] = [];
   addNotesVisibly: boolean = false;
+  editableNotes: editableNotes[] = [];
 
   constructor(private http: HttpClient) {
     this.registerForm = new FormGroup({
@@ -53,12 +58,32 @@ export class GridContainerComponent implements OnInit{
   }
 
   editTodo(title: string) {
+    const formData = this.registerForm.value;
     this.toggleEdit(title);
-    //this.http.put<any>('https://localhost:3000/api/todo', )
+    this.http.put<any>('https://localhost:3000/api/todo', formData).subscribe({
+      next: (response) => {
+        console.log('todo edited successfully:', response);
+      },
+      error: (error) => {
+        console.log('error editing successfully:', error);
+      }
+    })
   }
 
   toggleEdit(title: string) {
+    const ind = this.editableNotes.findIndex(obj => obj.hasOwnProperty(title))
+    this.editableNotes[ind][title] = !this.editableNotes[ind][title];
+  }
 
+  loadEditable() {
+    for(let todo in this.notesData) {
+      this.editableNotes.push({[this.notesData[todo].title]: false});
+    }
+  }
+
+  checkEditable(title: string) {
+    const result = this.editableNotes.find(obj => obj.hasOwnProperty(title));
+    return result ? result[title] : false;
   }
 
   toggleAddNoteVisibility() {
@@ -112,6 +137,7 @@ export class GridContainerComponent implements OnInit{
     this.http.get<any>('http://localhost:3000/api/todo').subscribe({
       next: (response) => {
         this.notesData = response.todo;
+        this.loadEditable();
       },
       error: (error) => {
         console.log('Error loading todos', error);
