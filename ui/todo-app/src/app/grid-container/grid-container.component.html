@@ -42,7 +42,7 @@
         <mat-divider class="margin-bottom"></mat-divider>
         <mat-card-content>{{ note.description }}</mat-card-content>
         <mat-card-content>
-          <form *ngIf="checkEditable(note.title)" [formGroup]="registerForm" class="form" (ngSubmit)="editTodo(note.title)">
+          <form *ngIf="checkEditable(note.title)" [formGroup]="editForm" class="form" (ngSubmit)="editTodo(note.title)">
             <mat-form-field class="full-width">
               <mat-label>Description</mat-label>
               <textarea matInput formControlName="description" name="description">{{note.description}}</textarea>

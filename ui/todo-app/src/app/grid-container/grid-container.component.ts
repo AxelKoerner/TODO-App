@@ -42,6 +42,7 @@ interface editableNotes {
 
 export class GridContainerComponent implements OnInit{
   registerForm: FormGroup;
+  editForm: FormGroup;
   notesData: Todo[] = [];
   addNotesVisibly: boolean = false;
   editableNotes: editableNotes[] = [];
@@ -51,23 +52,14 @@ export class GridContainerComponent implements OnInit{
       title: new FormControl("", [Validators.required]),
       description: new FormControl("", [Validators.required]),
     });
+    this.editForm = new FormGroup({
+      title: new FormControl("", [Validators.required]),
+      description: new FormControl("", [Validators.required]),
+    });
   }
 
   ngOnInit() {
     this.loadTodos();
-  }
-
-  editTodo(title: string) {
-    const formData = this.registerForm.value;
-    this.toggleEdit(title);
-    this.http.put<any>('https://localhost:3000/api/todo', formData).subscribe({
-      next: (response) => {
-        console.log('todo edited successfully:', response);
-      },
-      error: (error) => {
-        console.log('error editing successfully:', error);
-      }
-    })
   }
 
   toggleEdit(title: string) {
@@ -118,6 +110,24 @@ export class GridContainerComponent implements OnInit{
             console.log('error creating todo', error)
           }
         })
+  }
+
+  editTodo(title: string) {
+    this.editForm.value.title = title;
+    const formData = this.editForm.value;
+    console.log(formData);
+    this.toggleEdit(formData.title);
+    this.http.put<any>('http://localhost:3000/api/todo', formData)
+      .subscribe({
+      next: (response) => {
+        console.log('todo edited successfully:', response);
+        this.loadTodos();
+        this.editForm.reset()
+      },
+      error: (error) => {
+        console.log('error editing todo:', error);
+      }
+    })
   }
 
   findTodo(title: string) {

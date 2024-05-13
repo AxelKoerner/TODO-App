@@ -47,6 +47,23 @@ export async function findTodoDocument(title){
     }
 }
 
+export async function editTodoDocument(title, description) {
+    const uri = process.env.DB_URI
+    let mongoClient;
+    const filter = {title: title}
+    const updateDoc = {
+        $set: {description: description}
+    }
+    try {
+        mongoClient = await connectToCluster(uri)
+        const db = mongoClient.db('todoappdb');
+        const collection = db.collection('todoappcollection');
+        return await collection.updateOne(filter, updateDoc);
+    } finally {
+        await mongoClient.close();
+    }
+}
+
 export async function findOneTodoDocument(title){
     const uri = process.env.DB_URI
     let mongoClient;
@@ -73,12 +90,5 @@ export async function deleteTodoDocument(title) {
     finally {
         await mongoClient.close();
     }
-}
-
-export async function updateTodoDocument(collection, title, updatedFields) {
-    await collection.updateMany(
-        {title},
-        {$set: updatedFields}
-    )
 }
 
